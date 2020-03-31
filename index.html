@@ -207,13 +207,18 @@
             background: linear-gradient(rgb(208, 2, 27), rgb(208, 2, 27) 80%, rgb(233, 2, 30));
             border-color: rgb(208, 2, 27);
         }
+        
+        .action-button:disabled {
+            opacity:0.5;
+        }
+        
     </style>
 
     <div class="wrap">
         <section class="section-main" id="section-main">
             <header>
             <h1 align="center" style="font-size: 1em; font-family: 'Arial' !important;">
-                <img src="LAITS Logo.svg" alt="LAITS LOGO" style="width:361px";>
+                <img src="LAITS Logo.svg" alt="LAITS LOGO" style="width:361px;">
                 <br>
                 Enter your name & EID to begin support chat
             </h1>
@@ -254,36 +259,38 @@
         <script>
             $(document).ready((a) => {
                 connect.ChatInterface.init({
-  containerId: 'root',
-  headerConfig: {
-      isHTML: true,
-      render: () => {
-          return  (`
+                    containerId: 'root',
+                    headerConfig: {
+                        isHTML: true,
+                        render: () => {
+                            return  (`
                                 <div class="header-wrapper">
-                                    <h2 class="welcome-text"><img src="LAITS Logo.svg" alt="LAITS LOGO";></h2>
+                                    <h2 class="welcome-text"><img src="LAITS Logo.svg" alt="LAITS LOGO"></h2>
                                     <p id="chatDescription"></p>
                                 </div>
-          `)
-      }
-  },
-  footerConfig: {
-      isHTML: true,
-      render: (onEndChat) => {
-          this.testEndFunction = function(){
-              console.log("Chat ended");
-          };
-          return (`
-              <div class="footer-actions">
-                  <div class="button-wrapper">
-                      <button class="action-button" type="default" onclick="testEndFunction()">
-                          End chat
-                      </button>
-                  </div>
-              </div> 
-          `)
-      }
-  }
-});
+                            `)
+                        }
+                    },
+                    footerConfig: {
+                      isHTML: true,
+                      render: (onEndChat) => {
+                          this.testEndFunction = function(){
+                              //console.log("Chat ended");
+                              chatSession.client.session.disconnectParticipant();
+                              $('#endChat').prop("disabled",true).html('Chat ended');
+                          };
+                          return (`
+                              <div class="footer-actions">
+                                  <div class="button-wrapper">
+                                      <button id="endChat" class="action-button" type="default" onclick="testEndFunction()">
+                                          End chat
+                                      </button>
+                                  </div>
+                              </div> 
+                          `)
+                      }
+                  }
+                });
             });
 
             $(function () {
@@ -335,6 +342,7 @@
 
 
             function successHandler(chatSession) {
+            
                 window.chatSession = chatSession;
 
                 // chat connected
@@ -372,6 +380,7 @@
                 });
 
                 chatSession.onChatDisconnected(function (data) {
+                    //resetForm();
                     console.log("Do nothing");
                 });
 
@@ -382,12 +391,31 @@
                         render: () => {
                             return  (`
                                 <div class="header-wrapper">
-                                    <h2 class="welcome-text"><img src="LAITS Logo.svg" alt="LAITS LOGO";></h2>
+                                    <h2 class="welcome-text"><img src="LAITS Logo.svg" alt="LAITS LOGO"></h2>
                                     <p id="chatDescription"></p>
                                 </div>
                             `)
                         }
-                    }
+                    },
+                    footerConfig: {
+                      isHTML: true,
+                      render: (onEndChat) => {
+                          this.testEndFunction = function(){
+                              //console.log("Chat ended");
+                              chatSession.client.session.disconnectParticipant();
+                              $('#endChat').prop("disabled",true).html('Chat ended');
+                          };
+                          return (`
+                              <div class="footer-actions">
+                                  <div class="button-wrapper">
+                                      <button id="endChat" class="action-button" type="default" onclick="testEndFunction()">
+                                          End chat
+                                      </button>
+                                  </div>
+                              </div> 
+                          `)
+                      }
+                  }
                 });
             }
 
